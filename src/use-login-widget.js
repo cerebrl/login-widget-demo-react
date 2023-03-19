@@ -1,4 +1,4 @@
-import Widget, { configuration, journey } from '@forgerock/login-widget';
+import { configuration, journey } from '@forgerock/login-widget';
 import { useEffect, useRef, useState } from 'react'
 
 export default function useLoginWidget({ forgerock }) {
@@ -14,25 +14,24 @@ export default function useLoginWidget({ forgerock }) {
 
   // Initiate the Widget modules
   const config = configuration();
+	const journeyEvents = journey();
 
 	useEffect(() => {
 		// Initiate the Widget modules
 		config.set({ forgerock });
 
-    // Instantiate the Widget and assign it to a variable
-    const widget = new Widget({ target: document.getElementById('widget-modal') });
-
     // Subscribe to journey observable and assign unsubscribe function to variable
-    const unsubscribe = journey().subscribe((event) => {
+    const unsubscribe = journeyEvents.subscribe((event) => {
       if (userInfoRef !== event.user.response) {
         setUserInfo(event.user.response);
 				userInfoRef.current = event.user.response;
       }
     });
 
+		journeyEvents.start();
+
     // Return a function that destroys the Widget and unsubscribes from the journey observable
     return () => {
-      widget.$destroy();
       unsubscribe();
     };
 

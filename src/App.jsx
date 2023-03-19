@@ -1,10 +1,11 @@
-import { component, journey, user } from '@forgerock/login-widget';
+import { user } from '@forgerock/login-widget';
 
 import reactLogo from './assets/react.svg'
 import './App.css'
 import '@forgerock/login-widget/widget.css';
 
 import useLoginWidget from './use-login-widget';
+import LoginWidget from './LoginWidget';
 
 function App() {
   const userInfo = useLoginWidget({
@@ -15,10 +16,6 @@ function App() {
       },
     },
   });
-
-  // Initiate all the Widget modules
-  const componentEvents = component();
-  const journeyEvents = journey();
 
   return (
     <div className="App">
@@ -34,24 +31,22 @@ function App() {
 
       <h1>Vite + React</h1>
 
-      <div className="card">
+      { !userInfo ?
 
-        { !userInfo ?
-          <button onClick={() => {
-            journeyEvents.start();
-            componentEvents.open();
-          }}>
-            Login
-          </button> :
+        <div className="card tw_dark">
+          <LoginWidget />
+        </div> :
+
+        <div className="card">
           <button onClick={() => { user.logout(); }}>
             Logout
           </button>
-        }
 
-        <pre>
-          { JSON.stringify(userInfo, null, ' ') }
-        </pre>
-      </div>
+          <pre>
+            { JSON.stringify(userInfo, null, ' ') }
+          </pre>
+        </div>
+      }
 
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
