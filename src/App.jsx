@@ -1,18 +1,40 @@
-import { user } from '@forgerock/login-widget';
+import { configuration } from "@forgerock/login-widget";
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 
 import reactLogo from './assets/react.svg'
 import './App.css'
 import '@forgerock/login-widget/widget.css';
 
-import useLoginWidget from './use-login-widget';
-import LoginWidget from './LoginWidget';
+import Login from './Login';
+import Register from './Register';
+import Home from './Home';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />
+  },
+  {
+    path: 'login',
+    element: <Login />,
+  },
+  {
+    path: 'register',
+    element: <Register />,
+  }
+]);
 
 function App() {
-  const userInfo = useLoginWidget({
+  // Configure the Widget at the top level
+  configuration().set({
     forgerock: {
+      redirectUri: 'http://localhost:5173/',
       serverConfig: {
-				baseUrl: 'https://openam-crbrl-01.forgeblocks.com/am',
-				timeout: 3000,
+        baseUrl: 'https://openam-crbrl-01.forgeblocks.com/am',
+        timeout: 3000,
       },
     },
   });
@@ -31,22 +53,7 @@ function App() {
 
       <h1>Vite + React</h1>
 
-      { !userInfo ?
-
-        <div className="card tw_dark">
-          <LoginWidget />
-        </div> :
-
-        <div className="card">
-          <button onClick={() => { user.logout(); }}>
-            Logout
-          </button>
-
-          <pre>
-            { JSON.stringify(userInfo, null, ' ') }
-          </pre>
-        </div>
-      }
+      <RouterProvider router={router} />
 
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
